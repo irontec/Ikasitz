@@ -110,7 +110,7 @@ bool PlayScene::init()
     
     m_pHelpParticle = CCParticleSystemQuad::create("Galaxy.plist");
     m_pHelpParticle->stopSystem();
-    addChild(m_pHelpParticle);
+    addChild(m_pHelpParticle);    
     
     m_pWordContainer = CCSprite::create("word_container.png");
     m_pWordContainer->setPosition(ccp(VisibleRect::bottom().x , VisibleRect::bottom().y - m_pWordContainer->getContentSize().height/2));
@@ -207,6 +207,7 @@ void PlayScene::startHelp(float dt)
             if (color.r == wordColor.r && color.g == wordColor.g && color.b == wordColor.b) {
                 list->addObject(p);
             }
+            CC_SAFE_RELEASE(p);
         }
     }
     
@@ -239,6 +240,8 @@ void PlayScene::startHelp(float dt)
     
     CCPoint media = ccpMidpoint(right, left);
     m_pHelpParticle->setPosition(media);
+    
+
     list->release();
 
     this->schedule(schedule_selector(PlayScene::showHelp), 4);
@@ -320,6 +323,8 @@ void PlayScene::levelFinished()
 {
     isPaused = true;
     
+    pPauseButton->setEnabled(false);
+    
     this->unscheduleAllSelectors();
     
     CCUserDefault *pUserDefaults = CCUserDefault::sharedUserDefault();
@@ -344,6 +349,7 @@ void PlayScene::pauseClicked(CCObject *sender)
     isPaused = true;
     
     this->pauseSchedulerAndActions();
+    SimpleAudioEngine::sharedEngine()->pauseAllEffects();
     
     pPauseButton->setEnabled(false);
     pPauseLayer = PauseLayer::create(this);
@@ -359,5 +365,6 @@ void PlayScene::resumeGame(CCObject *sender)
     pPauseButton->setEnabled(true);
     pPauseLayer->removeAllChildrenWithCleanup(true);
     this->resumeSchedulerAndActions();
+    SimpleAudioEngine::sharedEngine()->resumeAllEffects();
     this->schedule(schedule_selector(PlayScene::secondsCounter), 1.0f);
 }

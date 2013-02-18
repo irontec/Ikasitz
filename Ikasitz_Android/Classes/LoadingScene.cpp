@@ -24,13 +24,8 @@ LoadingScene::LoadingScene()
     CCCallFunc *pCallback = CCCallFunc::create(this, callfunc_selector(LoadingScene::finishLoading));
     pCallback->retain();
     m_pAPI->setFinishCallback(pCallback);
-    
-    pthread_t thread;
-     
-    pthread_create(&thread, NULL, &IkasitzAPI::hello_helper, (void *)m_pAPI);
-    //pthread_join( inc_x_thread, NULL);
-    
-    //m_pAPI->checkDataUpdates();
+        
+    m_pAPI->checkDataUpdates();
     
 }
 

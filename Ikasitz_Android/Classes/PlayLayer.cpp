@@ -11,6 +11,12 @@
 #include "SpriteButton.h"
 #include "CCTexture2DMutable.h"
 
+PlayLayer::~PlayLayer()
+{
+    CC_SAFE_RELEASE(m_pMaskTexture);
+}
+
+
 bool PlayLayer::init()
 {
     m_pLevel = m_pScene->getLevel();
@@ -49,9 +55,11 @@ void PlayLayer::loadImage()
     image->initWithImageFile(maskPath.c_str());
     
     m_pMaskTexture = new CCTexture2DMutable();
-    m_pMaskTexture->initWithImage(image);
-    m_pMaskTexture->retain();
-    delete image;
+    m_pMaskTexture->initWithData((void*) image->getData(),  kCCTexture2DPixelFormat_RGBA8888, 960, 640, CCSizeMake(960, 640));
+    
+    //m_pMaskTexture->initWithImage(image);
+    //m_pMaskTexture->retain();
+    image->autorelease();
 }
 
 void PlayLayer::registerWithTouchDispatcher()
@@ -68,11 +76,10 @@ bool PlayLayer::ccTouchBegan(CCTouch *touch, CCEvent *event)
     
     float y = winSize.height - (touchLocation.y);
     
-    //CCPoint p = CCPointMake(po.x , sprite->getContentSize().height - po.y);
     CCPoint p = CCPointMake(x, y);
     ccColor4B color = m_pMaskTexture->pixelAt(p);
     CCLog("R:%d G:%d B:%d AT POINT: (%f,%f)", color.r, color.g, color.b, x , y);
-
+    
     m_pScene->screenTouched(color, touch);
     
 	return true;

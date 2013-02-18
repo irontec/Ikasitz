@@ -94,7 +94,6 @@ void LevelScene::createLevelsLayer()
         pContentLayer->setContentSize(contentSize);
         pContentLayer->setPosition(contentPos);
         
-        //CCPoint borderPosition[] = {ccp(125, 365), ccp(375, 365), ccp(125, 145), ccp(375, 145)};
         CCPoint texturePosition[] = {ccp(122, 369), ccp(372, 369), ccp(122, 149), ccp(372, 149)};
         CCPoint labelPosition[] = {ccp(125, 250), ccp(375, 250), ccp(125, 30), ccp(375, 30)};
         
@@ -108,17 +107,6 @@ void LevelScene::createLevelsLayer()
             LevelModel *pLevel = (LevelModel*) pLevels->objectAtIndex(cont);
             
             std::string imageName = CCFileUtils::sharedFileUtils()->getWriteablePath().append(pLevel->getList());
-            
-            /*CCTexture2D *pTexture = CCTextureCache::sharedTextureCache()->addImage("borde.png");
-            CCSprite *pImageBorder = CCSprite::createWithTexture(pTexture);
-            pImageBorder->setPosition(borderPosition[j-1]);
-            pContentLayer->addChild(pImageBorder);
-            
-            pTexture = CCTextureCache::sharedTextureCache()->addImage(imageName.c_str());
-            SpriteButton *pLevelButton = SpriteButton::create(pTexture ,this, callfuncO_selector(LevelScene::levelClicked), imageScale);
-            pLevelButton->setPosition(texturePosition[j-1]);
-            pLevelButton->setTag(cont);
-            pContentLayer->addChild(pLevelButton);*/
             
             CCTexture2D *pTexture = CCTextureCache::sharedTextureCache()->addImage("borde.png");
             SpriteButton *pLevelButton = SpriteButton::create(pTexture ,this, callfuncO_selector(LevelScene::levelClicked));
@@ -213,7 +201,7 @@ void LevelScene::levelClicked(CCObject *sender)
 {
     int levelPosition = ((SpriteButton*)sender)->getTag();
     m_pAPI->currentLevel = levelPosition;
-    LevelModel *pLevel = (LevelModel*) m_pKategoria->getPantailak()->objectAtIndex(levelPosition);
+    LevelModel *pLevel = (LevelModel*) m_pAPI->getSelectedKategoria()->getPantailak()->objectAtIndex(levelPosition);
     PlayScene *scene = PlayScene::create(pLevel);
     CCDirector *pDirector = CCDirector::sharedDirector();
     CCTransitionFade *tscene = CCTransitionFade::create(0.5, scene);

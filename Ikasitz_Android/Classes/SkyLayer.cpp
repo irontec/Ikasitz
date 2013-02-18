@@ -22,12 +22,11 @@ SkyLayer::SkyLayer()
 void SkyLayer::onEnter()
 {
     cocos2d::CCLayerGradient::onEnter();
-   /* CCFiniteTimeAction *actionMove = CCMoveBy::create(0.2, CCPointMake(visualRect.size.width, 0));
-    CCFiniteTimeAction* actionMoveDone = CCCallFuncN::create(this, callfuncN_selector(GalderaScene::newGaldera));
-    runAction(CCSequence::create(actionMove, actionMoveDone, NULL));*/
-    CCActionInterval* moveLeft = CCMoveTo::create(10.0, ccp(-100,350));
-    CCRepeatForever *repeat = CCRepeatForever::create(moveLeft);
-    //pCloud1->runAction(repeat);
+
+    /*CCActionInterval* move = CCMoveTo::create(5.0, ccp(765, 350));
+    CCActionInterval* setPosition = CCMoveTo::create(0.0, ccp(765, 350));
+    CCRepeatForever *repeat = CCRepeatForever::create((CCActionInterval*)CCSequence::create(move, setPosition, NULL));
+    pCloud1->runAction(repeat);*/
 }
 
 void SkyLayer::onExit()
@@ -43,15 +42,15 @@ bool SkyLayer::init()
     }
 
     pCloud1 = CCSprite::create("cloud_1.png");
-    pCloud1->setPosition(ccp(765,350));
+    pCloud1->setPosition(ccp(765, 350));
     addChild(pCloud1);
     
     pCloud2 = CCSprite::create("cloud_2.png");
-    pCloud2->setPosition(ccp(165,260));
+    pCloud2->setPosition(ccp(165, 260));
     addChild(pCloud2);
     
     pCloud3 = CCSprite::create("cloud_3.png");
-    pCloud3->setPosition(ccp(780,550));
+    pCloud3->setPosition(ccp(780, 550));
     addChild(pCloud3);
     
     pCloud4 = CCSprite::create("cloud_4.png");

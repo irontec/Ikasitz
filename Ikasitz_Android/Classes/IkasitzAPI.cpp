@@ -77,6 +77,7 @@ void IkasitzAPI::loadCurrentUniverse(KategoriaModel *pkat)
 {
     parseLevels(pkat);
     m_pSelectedKategoria = pkat;
+    m_pSelectedKategoria->retain();
 }
 
 CCHttpRequest* IkasitzAPI::createRequest()
@@ -122,6 +123,7 @@ CCArray* IkasitzAPI::parseKategoriak(const std::string data)
             
             pKategoriakTmp->addObject(pKat);
             
+            pKat->release();
         }
     }
     
@@ -176,30 +178,30 @@ KategoriaModel* IkasitzAPI::parseLevels(KategoriaModel *pKat)
                     pHitza->setIzena(strdup(cJSON_GetObjectItem(pHitzaJSON, "izena")->valuestring));
                     pHitza->setSoinua(strdup(cJSON_GetObjectItem(pHitzaJSON, "soinuPath")->valuestring));
                     
-                    int r = cJSON_GetObjectItem(pHitzaJSON, "r")->valueint;
-                    int g = cJSON_GetObjectItem(pHitzaJSON, "g")->valueint;
-                    int b = cJSON_GetObjectItem(pHitzaJSON, "b")->valueint;
+                    GLubyte r = cJSON_GetObjectItem(pHitzaJSON, "r")->valueint;
+                    GLubyte g = cJSON_GetObjectItem(pHitzaJSON, "g")->valueint;
+                    GLubyte b = cJSON_GetObjectItem(pHitzaJSON, "b")->valueint;
                     
                     pHitza->setKolorea(ccc3(r, g, b));
                     
                     pHitzakTmp->addObject(pHitza);
+                    pHitza->release();
                 }
                 
-                pHitzakTmp->retain();
+                
                 pLevel->setHitzak(pHitzakTmp);
                 
             }
             
             pLevels->addObject(pLevel);
+            pLevel->release();
         }
     }
     
-    cJSON_Delete(pRoot);
-    
-    pLevels->retain();
-    
     pKat->setPantailak(pLevels);
     
+    cJSON_Delete(pRoot);
+        
     return pKat;
 }
 
@@ -268,6 +270,7 @@ void IkasitzAPI::onKategoriaRequestCompleted(CCNode *sender, void *requestData)
                 if (pKategoriakToUpdate->count() == 0) {
                     m_pCallback->execute();
                 } else {
+                    CCMessageBox("Pantailak deskargatzen. Minutu pare bat itxaron", "Abisua");
                     checkKategoriaData(pKategoriakToUpdate);
                 }
 

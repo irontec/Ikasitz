@@ -79,20 +79,32 @@ void SQLHelper::insertKategoria(KategoriaModel *pKat)
     sqlite3_stmt *stmt;
     int colIndex = 0;
     
+    sqlite3_prepare_v2(m_pDB, "SELECT COUNT(*) FROM Kategoria WHERE id = ?", -1, &stmt, NULL);
+    sqlite3_bind_int(stmt, 1, pKat->getID());
     
-    sqlite3_prepare_v2(m_pDB,"INSERT INTO Kategoria VALUES (?,?,?,?,?,?)", -1, &stmt, NULL);
-    sqlite3_bind_int(stmt, ++colIndex, pKat->getID());
-    sqlite3_bind_text(stmt, ++colIndex, pKat->getIzena(), -1, NULL);
-    sqlite3_bind_text(stmt, ++colIndex, pKat->getDeskribapena(), -1, NULL);
-    sqlite3_bind_text(stmt, ++colIndex, pKat->getFileName(), -1, NULL);
-    sqlite3_bind_text(stmt, ++colIndex, pKat->getZipURL(), -1, NULL);
-    sqlite3_bind_text(stmt, ++colIndex, pKat->getToken(), -1, NULL);
-
+    sqlite3_step(stmt);
     
-    if (sqlite3_step(stmt) != SQLITE_DONE)
-        CCLog("ERROR INSERTING KATEGORIA");
+    int num = sqlite3_column_int(stmt, 0);
     
-    sqlite3_finalize(stmt);
+    //Ez bada existitzen sortu multzoa 0 baloreekin
+    if(num == 0) {
+        
+        sqlite3_prepare_v2(m_pDB,"INSERT INTO Kategoria VALUES (?,?,?,?,?,?)", -1, &stmt, NULL);
+        sqlite3_bind_int(stmt, ++colIndex, pKat->getID());
+        sqlite3_bind_text(stmt, ++colIndex, pKat->getIzena(), -1, NULL);
+        sqlite3_bind_text(stmt, ++colIndex, pKat->getDeskribapena(), -1, NULL);
+        sqlite3_bind_text(stmt, ++colIndex, pKat->getFileName(), -1, NULL);
+        sqlite3_bind_text(stmt, ++colIndex, pKat->getZipURL(), -1, NULL);
+        sqlite3_bind_text(stmt, ++colIndex, pKat->getToken(), -1, NULL);
+        
+        
+        if (sqlite3_step(stmt) != SQLITE_DONE)
+            CCLog("ERROR INSERTING KATEGORIA");
+        
+        sqlite3_finalize(stmt);
+    } else {
+        updateKategoria(pKat);
+    }
 
 }
 
@@ -141,8 +153,10 @@ CCArray* SQLHelper::queryKategoriak(int idKategoria)
         pKat->setFileName(strdup((char*)(sqlite3_column_text(stmt, colIndex++))));
         pKat->setZipURL(strdup((char*)(sqlite3_column_text(stmt, colIndex++))));
         pKat->setToken(strdup((char*)(sqlite3_column_text(stmt, colIndex++))));
-   
+          
         pKategoriak->addObject(pKat);
+        
+        pKat->release();
     }
     
     sqlite3_finalize(stmt);

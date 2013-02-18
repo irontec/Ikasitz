@@ -72,7 +72,7 @@ bool CCTexture2DMutable::initWithData(const void* data, CCTexture2DPixelFormat p
     return true;
 }
 
-bool CCTexture2DMutable::initWithImage(cocos2d::CCImage *image)
+/*bool CCTexture2DMutable::initWithImage(cocos2d::CCImage *image)
 {
     data_ = (void*) image->getData();
     if(!CCTexture2D::initWithImage(image))
@@ -81,15 +81,17 @@ bool CCTexture2DMutable::initWithImage(cocos2d::CCImage *image)
     unsigned int width = image->getWidth();
     unsigned int height = image->getWidth();
     
+    
     bytesPerPixel_ = 4;
     
 #if CC_MUTABLE_TEXTURE_SAVE_ORIGINAL_DATA
     unsigned int max = width*height*bytesPerPixel_;
+    //new unsigned char[width * height * 2];
     originalData_ = malloc(max);
     memcpy(originalData_, data_, max);
 #endif
     return true;
-}
+}*/
 
 ccColor4B CCTexture2DMutable::pixelAt(const CCPoint& pt)
 {
@@ -99,7 +101,7 @@ ccColor4B CCTexture2DMutable::pixelAt(const CCPoint& pt)
 	if(pt.x >= m_tContentSize.width || pt.y >= m_tContentSize.height) return c;
     
 	unsigned int x = pt.x, y = pt.y;
-    
+        
 	if(m_ePixelFormat == kTexture2DPixelFormat_RGBA8888){
 		unsigned int *pixel = (unsigned int *)originalData_;
 		pixel = pixel + (y * m_uPixelsWide) + x;
@@ -108,28 +110,28 @@ ccColor4B CCTexture2DMutable::pixelAt(const CCPoint& pt)
 		c.b = (*pixel >> 16) & 0xff;
 		c.a = (*pixel >> 24) & 0xff;
 	} else if(m_ePixelFormat == kTexture2DPixelFormat_RGBA4444){
-		GLushort *pixel = (GLushort *)data_;
+		GLushort *pixel = (GLushort *)originalData_;
 		pixel = pixel + (y * m_uPixelsWide) + x;
 		c.a = ((*pixel & 0xf) << 4) | (*pixel & 0xf);
 		c.b = (((*pixel >> 4) & 0xf) << 4) | ((*pixel >> 4) & 0xf);
 		c.g = (((*pixel >> 8) & 0xf) << 4) | ((*pixel >> 8) & 0xf);
 		c.r = (((*pixel >> 12) & 0xf) << 4) | ((*pixel >> 12) & 0xf);
 	} else if(m_ePixelFormat == kTexture2DPixelFormat_RGB5A1){
-		GLushort *pixel = (GLushort *)data_;
+		GLushort *pixel = (GLushort *)originalData_;
 		pixel = pixel + (y * m_uPixelsWide) + x;
 		c.r = ((*pixel >> 11) & 0x1f)<<3;
 		c.g = ((*pixel >> 6) & 0x1f)<<3;
 		c.b = ((*pixel >> 1) & 0x1f)<<3;
 		c.a = (*pixel & 0x1)*255;
 	} else if(m_ePixelFormat == kTexture2DPixelFormat_RGB565){
-		GLushort *pixel = (GLushort *)data_;
+		GLushort *pixel = (GLushort *)originalData_;
 		pixel = pixel + (y * m_uPixelsWide) + x;
 		c.b = (*pixel & 0x1f)<<3;
 		c.g = ((*pixel >> 5) & 0x3f)<<2;
 		c.r = ((*pixel >> 11) & 0x1f)<<3;
 		c.a = 255;
 	} else if(m_ePixelFormat == kTexture2DPixelFormat_A8){
-		GLubyte *pixel = (GLubyte *)data_;
+		GLubyte *pixel = (GLubyte *)originalData_;
 		c.a = pixel[(y * m_uPixelsWide) + x];
 		// Default white
 		c.r = 255;
@@ -269,7 +271,7 @@ CCTexture2DMutable::~CCTexture2DMutable(void)
 {
 	CCLOGINFO("cocos2d: deallocing %p", this);
     
-	free(data_);
+	//free(data_);
 #if CC_MUTABLE_TEXTURE_SAVE_ORIGINAL_DATA
 	free(originalData_);
 #endif
