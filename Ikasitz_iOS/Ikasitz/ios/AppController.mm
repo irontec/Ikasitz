@@ -13,6 +13,8 @@
 
 #import "RootViewController.h"
 
+#import "GAI.h"
+
 @implementation AppController
 
 @synthesize window;
@@ -25,6 +27,10 @@
 static AppDelegate s_sharedApplication;
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+    
+    [GAI sharedInstance].dispatchInterval = 0;
+    [GAI sharedInstance].debug = YES;
+    [[GAI sharedInstance] trackerWithTrackingId:@"UA-37769185-2"];
 
     // Override point for customization after application launch.
 
@@ -109,7 +115,8 @@ static AppDelegate s_sharedApplication;
     /*
      Free up as much memory as possible by purging cached data objects that can be recreated (or reloaded from disk) later.
      */
-     cocos2d::CCDirector::sharedDirector()->purgeCachedData();
+    cocos2d::CCDirector::sharedDirector()->purgeCachedData();
+    CCLOG("MEMORIAAA");
 }
 
 

@@ -112,7 +112,9 @@ bool PlayScene::init()
     m_pHelpParticle->stopSystem();
     addChild(m_pHelpParticle);    
     
-    m_pWordContainer = CCSprite::create("word_container.png");
+    
+    pTexture = CCTextureCache::sharedTextureCache()->addImage("word_container.png");
+    m_pWordContainer = CCSprite::createWithTexture(pTexture);
     m_pWordContainer->setPosition(ccp(VisibleRect::bottom().x , VisibleRect::bottom().y - m_pWordContainer->getContentSize().height/2));
     m_pWordLabel = CCLabelTTF::create("", fontList[0], 40.0);
     m_pWordLabel->setAnchorPoint(ccp(0.5,1));
@@ -164,21 +166,35 @@ void PlayScene::onEnter()
 void PlayScene::screenTouched(ccColor4B color, CCTouch *touch)
 {
     ccColor3B wordColor = m_pCurrentWord->getKolorea();
-    
-    if (!isMoving && !isPaused && !pPauseButton->containsTouchLocation(touch)) {
+
+    if (m_pWordContainer->boundingBox().containsPoint(convertTouchToNodeSpace(touch))) {
+        if (soundEnabled) {
+            std::string soundPath(CCFileUtils::sharedFileUtils()->getWriteablePath());
+            soundPath.append(m_pCurrentWord->getSoinua());
+            SimpleAudioEngine::sharedEngine()->playEffect(soundPath.c_str());
+            
+            //Puede pasar que la caja este por encima del objeto que hay qu tocar. se comprueba si es así y se da por bueno
+            if (wordColor.r == color.r && wordColor.g == color.g && wordColor.b == color.b) {
+                if (soundEnabled) {
+                    SimpleAudioEngine::sharedEngine()->playEffect("sounds/bien.wav");
+                }
+                wordExit();
+            }
+        }
+    } else if (!isMoving && !isPaused && !pPauseButton->containsTouchLocation(touch)) {
         if (wordColor.r == color.r && wordColor.g == color.g && wordColor.b == color.b) {
             if (soundEnabled) {
                 SimpleAudioEngine::sharedEngine()->playEffect("sounds/bien.wav");
             }
             wordExit();
-        } else if (pPauseButton->containsTouchLocation(touch)) {
-            //BUG
         } else {
             if (soundEnabled) {
                 SimpleAudioEngine::sharedEngine()->playEffect("sounds/mal.wav");
             }
         }
     }
+    
+    
 }
 
 void PlayScene::secondsCounter(float dt)
@@ -207,6 +223,7 @@ void PlayScene::startHelp(float dt)
             if (color.r == wordColor.r && color.g == wordColor.g && color.b == wordColor.b) {
                 list->addObject(p);
             }
+            CC_SAFE_RELEASE(p);
         }
     }
     
@@ -239,6 +256,8 @@ void PlayScene::startHelp(float dt)
     
     CCPoint media = ccpMidpoint(right, left);
     m_pHelpParticle->setPosition(media);
+    
+
     list->release();
 
     this->schedule(schedule_selector(PlayScene::showHelp), 4);
@@ -320,6 +339,8 @@ void PlayScene::levelFinished()
 {
     isPaused = true;
     
+    pPauseButton->setEnabled(false);
+    
     this->unscheduleAllSelectors();
     
     CCUserDefault *pUserDefaults = CCUserDefault::sharedUserDefault();
@@ -344,6 +365,7 @@ void PlayScene::pauseClicked(CCObject *sender)
     isPaused = true;
     
     this->pauseSchedulerAndActions();
+    SimpleAudioEngine::sharedEngine()->pauseAllEffects();
     
     pPauseButton->setEnabled(false);
     pPauseLayer = PauseLayer::create(this);
@@ -359,5 +381,6 @@ void PlayScene::resumeGame(CCObject *sender)
     pPauseButton->setEnabled(true);
     pPauseLayer->removeAllChildrenWithCleanup(true);
     this->resumeSchedulerAndActions();
+    SimpleAudioEngine::sharedEngine()->resumeAllEffects();
     this->schedule(schedule_selector(PlayScene::secondsCounter), 1.0f);
 }

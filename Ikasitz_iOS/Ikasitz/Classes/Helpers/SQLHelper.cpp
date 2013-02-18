@@ -153,8 +153,10 @@ CCArray* SQLHelper::queryKategoriak(int idKategoria)
         pKat->setFileName(strdup((char*)(sqlite3_column_text(stmt, colIndex++))));
         pKat->setZipURL(strdup((char*)(sqlite3_column_text(stmt, colIndex++))));
         pKat->setToken(strdup((char*)(sqlite3_column_text(stmt, colIndex++))));
-   
+          
         pKategoriak->addObject(pKat);
+        
+        pKat->release();
     }
     
     sqlite3_finalize(stmt);

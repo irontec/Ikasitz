@@ -220,6 +220,9 @@
 		F8A39DDF16A9558F00E469B2 /* IkasitzAPI.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F8A39DDD16A9558E00E469B2 /* IkasitzAPI.cpp */; };
 		F8A39DE216A9571300E469B2 /* LoadingScene.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F8A39DE016A9571300E469B2 /* LoadingScene.cpp */; };
 		F8B89EC516B12371005F7A00 /* CCSlider.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F8B89EC316B12371005F7A00 /* CCSlider.cpp */; };
+		F8DE5E2416C8DA88004932C2 /* libGoogleAnalytics.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F8DE5E2316C8DA88004932C2 /* libGoogleAnalytics.a */; };
+		F8DE5E2616C8DAB7004932C2 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F8DE5E2516C8DAB7004932C2 /* CoreData.framework */; };
+		F8DE5E2816C8DAC0004932C2 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F8DE5E2716C8DAC0004932C2 /* SystemConfiguration.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -691,6 +694,14 @@
 		F8A39DE416A95EBF00E469B2 /* KategoriaModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = KategoriaModel.h; sourceTree = "<group>"; };
 		F8B89EC316B12371005F7A00 /* CCSlider.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CCSlider.cpp; sourceTree = "<group>"; };
 		F8B89EC416B12371005F7A00 /* CCSlider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCSlider.h; sourceTree = "<group>"; };
+		F8DE5E1E16C8DA88004932C2 /* GAI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GAI.h; sourceTree = "<group>"; };
+		F8DE5E1F16C8DA88004932C2 /* GAITrackedViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GAITrackedViewController.h; sourceTree = "<group>"; };
+		F8DE5E2016C8DA88004932C2 /* GAITracker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GAITracker.h; sourceTree = "<group>"; };
+		F8DE5E2116C8DA88004932C2 /* GAITransaction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GAITransaction.h; sourceTree = "<group>"; };
+		F8DE5E2216C8DA88004932C2 /* GAITransactionItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GAITransactionItem.h; sourceTree = "<group>"; };
+		F8DE5E2316C8DA88004932C2 /* libGoogleAnalytics.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libGoogleAnalytics.a; sourceTree = "<group>"; };
+		F8DE5E2516C8DAB7004932C2 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
+		F8DE5E2716C8DAC0004932C2 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -698,6 +709,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F8DE5E2816C8DAC0004932C2 /* SystemConfiguration.framework in Frameworks */,
+				F8DE5E2616C8DAB7004932C2 /* CoreData.framework in Frameworks */,
 				F82D7EC216A8476D003CB3D7 /* QuartzCore.framework in Frameworks */,
 				F82D7EC416A8476D003CB3D7 /* OpenGLES.framework in Frameworks */,
 				F82D7EC616A8476D003CB3D7 /* OpenAL.framework in Frameworks */,
@@ -707,6 +720,7 @@
 				F82D7ECE16A8476D003CB3D7 /* Foundation.framework in Frameworks */,
 				F82D7ED016A8476D003CB3D7 /* CoreGraphics.framework in Frameworks */,
 				F82D801F16A84771003CB3D7 /* libcurl.a in Frameworks */,
+				F8DE5E2416C8DA88004932C2 /* libGoogleAnalytics.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -733,6 +747,8 @@
 		F82D7EC016A8476D003CB3D7 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				F8DE5E2716C8DAC0004932C2 /* SystemConfiguration.framework */,
+				F8DE5E2516C8DAB7004932C2 /* CoreData.framework */,
 				F82D7EC116A8476D003CB3D7 /* QuartzCore.framework */,
 				F82D7EC316A8476D003CB3D7 /* OpenGLES.framework */,
 				F82D7EC516A8476D003CB3D7 /* OpenAL.framework */,
@@ -791,6 +807,7 @@
 		F82D7EF316A8476D003CB3D7 /* libs */ = {
 			isa = PBXGroup;
 			children = (
+				F8DE5E1D16C8DA88004932C2 /* Analytics */,
 				F82D7EF416A8476D003CB3D7 /* cocos2dx */,
 				F82D80B216A84772003CB3D7 /* CocosDenshion */,
 				F82D80C616A84772003CB3D7 /* extensions */,
@@ -1671,6 +1688,20 @@
 			path = Classes/Models;
 			sourceTree = "<group>";
 		};
+		F8DE5E1D16C8DA88004932C2 /* Analytics */ = {
+			isa = PBXGroup;
+			children = (
+				F8DE5E1E16C8DA88004932C2 /* GAI.h */,
+				F8DE5E1F16C8DA88004932C2 /* GAITrackedViewController.h */,
+				F8DE5E2016C8DA88004932C2 /* GAITracker.h */,
+				F8DE5E2116C8DA88004932C2 /* GAITransaction.h */,
+				F8DE5E2216C8DA88004932C2 /* GAITransactionItem.h */,
+				F8DE5E2316C8DA88004932C2 /* libGoogleAnalytics.a */,
+			);
+			name = Analytics;
+			path = libs/Analytics;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -2017,6 +2048,7 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/Ikasitz/libs/cocos2dx/platform/third_party/ios/libraries\"",
+					"\"$(SRCROOT)/Ikasitz/libs/Analytics\"",
 				);
 				OTHER_LDFLAGS = (
 					"-lxml2",
@@ -2040,6 +2072,7 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/Ikasitz/libs/cocos2dx/platform/third_party/ios/libraries\"",
+					"\"$(SRCROOT)/Ikasitz/libs/Analytics\"",
 				);
 				OTHER_LDFLAGS = (
 					"-lxml2",
@@ -2096,6 +2129,7 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/Ikasitz/libs/cocos2dx/platform/third_party/ios/libraries\"",
+					"\"$(SRCROOT)/Ikasitz/libs/Analytics\"",
 				);
 				OTHER_LDFLAGS = (
 					"-lxml2",

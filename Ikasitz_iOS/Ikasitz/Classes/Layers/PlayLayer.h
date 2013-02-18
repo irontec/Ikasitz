@@ -24,6 +24,8 @@ public:
     
     virtual bool init();
     
+    ~PlayLayer();
+    
     static PlayLayer* create(PlayScene *pScene)
     {
         PlayLayer *pRet = new PlayLayer();

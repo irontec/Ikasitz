@@ -201,7 +201,7 @@ void LevelScene::levelClicked(CCObject *sender)
 {
     int levelPosition = ((SpriteButton*)sender)->getTag();
     m_pAPI->currentLevel = levelPosition;
-    LevelModel *pLevel = (LevelModel*) m_pKategoria->getPantailak()->objectAtIndex(levelPosition);
+    LevelModel *pLevel = (LevelModel*) m_pAPI->getSelectedKategoria()->getPantailak()->objectAtIndex(levelPosition);
     PlayScene *scene = PlayScene::create(pLevel);
     CCDirector *pDirector = CCDirector::sharedDirector();
     CCTransitionFade *tscene = CCTransitionFade::create(0.5, scene);

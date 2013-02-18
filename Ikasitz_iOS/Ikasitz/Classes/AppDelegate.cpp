@@ -75,8 +75,6 @@ bool AppDelegate::applicationDidFinishLaunching()
 void AppDelegate::applicationDidEnterBackground()
 {
     CCDirector::sharedDirector()->pause();
-
-    // if you use SimpleAudioEngine, it must be paused
     SimpleAudioEngine::sharedEngine()->pauseBackgroundMusic();
 }
 
@@ -85,6 +83,9 @@ void AppDelegate::applicationWillEnterForeground()
 {
     CCDirector::sharedDirector()->resume();
     
-    // if you use SimpleAudioEngine, it must resume here
-    SimpleAudioEngine::sharedEngine()->resumeBackgroundMusic();
+    CCUserDefault *pUserDefaults = CCUserDefault::sharedUserDefault();
+    bool sound = pUserDefaults->getBoolForKey("sound", false);
+    if (sound) {
+        SimpleAudioEngine::sharedEngine()->resumeBackgroundMusic();
+    }
 }
