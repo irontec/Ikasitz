@@ -1,6 +1,6 @@
 # Ikasitz
 
-![Ikasitz](https://raw.githubusercontent.com/irontec/Ikasitz/master/Ikasitz/Resources/ipadhd/logo.png)
+<img src="https://raw.githubusercontent.com/irontec/Ikasitz/master/Ikasitz/Resources/ipadhd/logo.png" width="250">
 >Zure seme-alabei euskararen oinarrizko hiztegia ikasten lagundu nahi badiezu, Ikasitz jokoarekin lortu dezakezu.
 >Haurrentzako egindako joko hezigarri honekin, zure seme-alabek hainbat gai desberdinei buruzko hitz berri ugari ikasi ditzateke, ondo pasatzen duten bitartean.
 
