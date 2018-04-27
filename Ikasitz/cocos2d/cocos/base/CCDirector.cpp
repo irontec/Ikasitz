@@ -98,6 +98,7 @@ const char *Director::EVENT_AFTER_VISIT = "director_after_visit";
 const char *Director::EVENT_BEFORE_UPDATE = "director_before_update";
 const char *Director::EVENT_AFTER_UPDATE = "director_after_update";
 const char *Director::EVENT_RESET = "director_reset";
+const char *Director::EVENT_BEFORE_DRAW = "director_before_draw";
 
 Director* Director::getInstance()
 {
@@ -114,6 +115,7 @@ Director* Director::getInstance()
 Director::Director()
 : _isStatusLabelUpdated(true)
 , _invalid(true)
+, _deltaTimePassedByCaller(false)
 {
 }
 
@@ -174,6 +176,8 @@ bool Director::init(void)
     _afterSetNextScene->setUserData(this);
     _eventAfterDraw = new (std::nothrow) EventCustom(EVENT_AFTER_DRAW);
     _eventAfterDraw->setUserData(this);
+    _eventBeforeDraw = new (std::nothrow) EventCustom(EVENT_BEFORE_DRAW);
+    _eventBeforeDraw->setUserData(this);
     _eventAfterVisit = new (std::nothrow) EventCustom(EVENT_AFTER_VISIT);
     _eventAfterVisit->setUserData(this);
     _eventBeforeUpdate = new (std::nothrow) EventCustom(EVENT_BEFORE_UPDATE);
@@ -209,20 +213,19 @@ Director::~Director(void)
     CC_SAFE_RELEASE(_scheduler);
     CC_SAFE_RELEASE(_actionManager);
     CC_SAFE_DELETE(_defaultFBO);
-    
+
     CC_SAFE_RELEASE(_beforeSetNextScene);
     CC_SAFE_RELEASE(_afterSetNextScene);
     CC_SAFE_RELEASE(_eventBeforeUpdate);
     CC_SAFE_RELEASE(_eventAfterUpdate);
     CC_SAFE_RELEASE(_eventAfterDraw);
+    CC_SAFE_RELEASE(_eventBeforeDraw);
     CC_SAFE_RELEASE(_eventAfterVisit);
     CC_SAFE_RELEASE(_eventProjectionChanged);
     CC_SAFE_RELEASE(_eventResetDirector);
 
     delete _renderer;
-
     delete _console;
-
 
     CC_SAFE_RELEASE(_eventDispatcher);
     
@@ -298,6 +301,9 @@ void Director::drawScene()
 
     _renderer->clear();
     experimental::FrameBuffer::clearAllFBOs();
+    
+    _eventDispatcher->dispatchEvent(_eventBeforeDraw);
+    
     /* to avoid flickr, nextScene MUST be here: after tick and before draw.
      * FIXME: Which bug is this one. It seems that it can't be reproduced with v0.9
      */
@@ -332,7 +338,9 @@ void Director::drawScene()
     
     if (_displayStats)
     {
+#if !CC_STRIP_FPS
         showStats();
+#endif
     }
     
     _renderer->render();
@@ -351,14 +359,14 @@ void Director::drawScene()
 
     if (_displayStats)
     {
+#if !CC_STRIP_FPS
         calculateMPF();
+#endif
     }
 }
 
 void Director::calculateDeltaTime()
 {
-    auto now = std::chrono::steady_clock::now();
-
     // new delta time. Re-fixed issue #1277
     if (_nextDeltaTimeZero)
     {
@@ -367,7 +375,13 @@ void Director::calculateDeltaTime()
     }
     else
     {
-        _deltaTime = std::chrono::duration_cast<std::chrono::microseconds>(now - _lastUpdate).count() / 1000000.0f;
+        // delta time may passed by invoke mainLoop(dt)
+        if (!_deltaTimePassedByCaller)
+        {
+            auto now = std::chrono::steady_clock::now();
+            _deltaTime = std::chrono::duration_cast<std::chrono::microseconds>(now - _lastUpdate).count() / 1000000.0f;
+            _lastUpdate = now;
+        }
         _deltaTime = MAX(0, _deltaTime);
     }
 
@@ -378,8 +392,6 @@ void Director::calculateDeltaTime()
         _deltaTime = 1 / 60.0f;
     }
 #endif
-
-    _lastUpdate = now;
 }
 
 float Director::getDeltaTime() const
@@ -729,7 +741,7 @@ void Director::purgeCachedData(void)
 
 float Director::getZEye(void) const
 {
-    return (_winSizeInPoints.height / 1.1566f);
+    return (_winSizeInPoints.height / 1.154700538379252f);//(2 * tanf(M_PI/6))
 }
 
 void Director::setAlphaBlending(bool on)
@@ -1249,6 +1261,8 @@ void Director::updateFrameRate()
     _frameRate = 1.0f / _deltaTime;
 }
 
+#if !CC_STRIP_FPS
+
 // display the FPS using a LabelAtlas
 // updates the FPS every frame
 void Director::showStats()
@@ -1306,11 +1320,7 @@ void Director::calculateMPF()
     static float prevSecondsPerFrame = 0;
     static const float MPF_FILTER = 0.10f;
 
-    auto now = std::chrono::steady_clock::now();
-    
-    _secondsPerFrame = std::chrono::duration_cast<std::chrono::microseconds>(now - _lastUpdate).count() / 1000000.0f;
-
-    _secondsPerFrame = _secondsPerFrame * MPF_FILTER + (1-MPF_FILTER) * prevSecondsPerFrame;
+    _secondsPerFrame = _deltaTime * MPF_FILTER + (1-MPF_FILTER) * prevSecondsPerFrame;
     prevSecondsPerFrame = _secondsPerFrame;
 }
 
@@ -1393,6 +1403,8 @@ void Director::createStatsLabel()
     _drawnBatchesLabel->setPosition(Vec2(0, height_spacing*1) + CC_DIRECTOR_STATS_POSITION);
     _FPSLabel->setPosition(Vec2(0, height_spacing*0)+CC_DIRECTOR_STATS_POSITION);
 }
+
+#endif // #if !CC_STRIP_FPS
 
 void Director::setContentScaleFactor(float scaleFactor)
 {
@@ -1488,6 +1500,13 @@ void Director::mainLoop()
         // release the objects
         PoolManager::getInstance()->getCurrentPool()->clear();
     }
+}
+
+void Director::mainLoop(float dt)
+{
+    _deltaTime = dt;
+    _deltaTimePassedByCaller = true;
+    mainLoop();
 }
 
 void Director::stopAnimation()

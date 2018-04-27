@@ -5,7 +5,7 @@
 
 static std::string fontList[] =
 {
-    "fonts/JustAnotherFont.ttf",
+    "fonts/Muli-Regular.ttf",
     "fonts/Muli-Regular.ttf"
 };
 
